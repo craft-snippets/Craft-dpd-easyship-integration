@@ -1,6 +1,7 @@
 {
   "name": "craftsnippets/craft-shipping-toolbox-dpd-easyship",
   "type": "craft-plugin",
+  "version": "1.0.0",
   "license": "mit",
   "require": {
     "php": ">=8.2",
