@@ -23,8 +23,8 @@ Open your terminal and run the following commands:
 cd /path/to/my-project.test
 
 # tell Composer to load the plugin
-composer require craftsnippets/dpd-easyship
+composer require craftsnippets/craft-shipping-toolbox-dpd-easyship
 
 # tell Craft to install the plugin
-./craft plugin/install dpd-easyship-shipping
+./craft plugin/install dpd-easy-ship
 ```
