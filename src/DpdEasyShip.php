@@ -110,4 +110,24 @@ class DpdEasyShip extends ShippingPlugin
     {
         return false;
     }
+
+    public function supportsCod()
+    {
+        return true;
+    }
+
+    public function supportsParcelShops()
+    {
+        return true;
+    }
+
+    public function useInputWeight()
+    {
+        return true;
+    }
+
+    public function getWeightInputInstructions(): ?string
+    {
+        return Craft::t('dpd-easy-ship', 'Weight value is required when using "Parcel Shop" type parcel.');
+    }
 }
