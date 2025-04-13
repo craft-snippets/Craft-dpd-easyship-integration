@@ -78,10 +78,10 @@ class DpdEasyShipService extends ShippingServiceBase
 //                'label' => Craft::t('dpd-easy-ship', 'Tyre (B2C)'),
 //                'value' => ParcelType::TYRE_B2C,
 //            ],
-//            [
-//                'label' => Craft::t('dpd-easy-ship', 'Parcel shop'),
-//                'value' => ParcelType::PARCEL_SHOP,
-//            ],
+            [
+                'label' => Craft::t('dpd-easy-ship', 'Parcel shop'),
+                'value' => ParcelType::PARCEL_SHOP,
+            ],
 //            [
 //                'label' => Craft::t('dpd-easy-ship', 'Pallet'),
 //                'value' => ParcelType::PALLET,
@@ -154,6 +154,9 @@ class DpdEasyShipService extends ShippingServiceBase
         // request settings
         $defaultSettings = [
             'parcelCount' => 1,
+            'codAmount' => null,
+            'parcelShopCode' => null,
+            'weight' => null,
         ];
         $requestSettings = array_merge($defaultSettings, $requestSettings);
 
@@ -181,11 +184,20 @@ class DpdEasyShipService extends ShippingServiceBase
         $request->email = $order->email;
         $request->order_number = $order->getShortNumber();
 
-        // cod
         $request->parcel_type = $shippingData->getDefaultParcelType();
-        $request->cod_amount = $order->getTotalPrice();
+
+        // cod
+        $request->cod_amount = $requestSettings['codAmount'];
         $request->cod_purpose = $order->getShortNumber();
         $request->parcel_cod_type = DpdEasyShip::getInstance()->getSettings()->codType;
+
+        // parcel shop
+        if(!is_null($requestSettings['parcelShopCode'])){
+            $request->pudo_id = $requestSettings['parcelShopCode'];
+        }
+        if(!is_null($requestSettings['weight'])){
+            $request->weight = (float)$requestSettings['weight'];
+        }
 
         $phoneField = ShippingToolbox::getInstance()->plugins->getPhoneField();
         if(!is_null($phoneField)){

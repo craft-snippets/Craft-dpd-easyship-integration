@@ -305,10 +305,15 @@ class DpdEasyShipShipmentDetails extends BaseShippingDetails
     public function getCurrentParcelTypeLabel()
     {
         $parcelType = $this->parcel_type;
+        return $this->getParcelTypeLabel($parcelType);
+    }
+
+    private function getParcelTypeLabel(?string $parcelType): ?string
+    {
         if(is_null($parcelType)){
             return null;
         }
-        $parcelTypeOptions = DpdEasyShip::getInstance()->easyShip->getParcelTypeOptions();
+        $parcelTypeOptions = DpdEasyShip::getInstance()->getPluginService()->getParcelTypeOptions();
         foreach($parcelTypeOptions as $option){
             if($option['value'] == $parcelType){
                 return $option['label'];
@@ -360,6 +365,75 @@ class DpdEasyShipShipmentDetails extends BaseShippingDetails
             ];
         }
         return $properties;
+    }
+
+    public function isCodForced(): bool
+    {
+        return $this->getParcelType() == \DataLinx\DPD\ParcelType::CLASSIC_COD;
+    }
+
+    public function isCodDisabled(): bool
+    {
+        return $this->getParcelType() != \DataLinx\DPD\ParcelType::CLASSIC_COD;
+    }
+
+    public function getCodCurrencyBeforeCreation()
+    {
+        return 'EUR';
+    }
+
+    public function getCodAmountNumber()
+    {
+        return $this->cod_amount;
+    }
+
+    public function getCodAmountCurrency()
+    {
+        return 'EUR (default currency)';
+    }
+
+    private function getParcelType()
+    {
+        $settings = $this->plugin->getSettings();
+        $methods = $settings->enabledShippingMethods;
+        $methodsIds = array_column($methods, 'shippingMethodId');
+        $order = $this->order;
+        if(is_null($order->getShippingMethod()) || !in_array($order->getShippingMethod()->id, $methodsIds)){
+            return null;
+        }
+
+        $shippingMethodOption = array_filter($methods, function($single) use ($order){
+            return $single['shippingMethodId'] == $order->getShippingMethod()->id;
+        });
+        $shippingMethodOption = reset($shippingMethodOption);
+
+        $parcelType = $shippingMethodOption['parcelType'] ?? null;
+        return $parcelType;
+    }
+
+    public function infoBeforeCreation(): array
+    {
+        $parcelType = $this->getParcelType();
+        if(is_null($parcelType)){
+            return [];
+        }
+
+        $typeLabel = $this->getParcelTypeLabel($parcelType);
+
+        $info = [
+            'You will create parcel of type: ' . $typeLabel,
+        ];
+        return $info;
+    }
+
+    public function isParcelShopDisabled()
+    {
+        return $this->getParcelType() != \DataLinx\DPD\ParcelType::PARCEL_SHOP;
+    }
+
+    public function isParcelShopForced()
+    {
+        return $this->getParcelType() == \DataLinx\DPD\ParcelType::PARCEL_SHOP;
     }
 
 }
