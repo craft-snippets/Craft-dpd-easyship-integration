@@ -8,14 +8,14 @@
 }) }}
 
 {{ forms.textField({
-    label: 'API Password'|t('dpd-easy-ship'),
+    label: settings.attributeLabels.apiPassword,
     name: 'apiPassword',
     value: settings.apiPassword,
     errors: settings.getErrors('apiPassword'),
 }) }}
 
 {{ forms.selectField({
-    label: 'API Country'|t('dpd-easy-ship'),
+    label: settings.attributeLabels.apiCountry,
     name: 'apiCountry',
     value: settings.apiCountry,
     errors: settings.getErrors('apiCountry'),
@@ -30,7 +30,7 @@
     rows: settings.enabledShippingMethods,
     addRowLabel: 'Add the shipping method'|t('search-toolbox'),
     initJs: true,
-    label: 'Shipping methods with Dpd EasyShip integration enabled'|t('search-toolbox'),
+    label: settings.attributeLabels.enabledShippingMethods,
     errors: settings.getErrors('enabledShippingMethods'),
     allowAdd: true,
     allowDelete: true,
@@ -39,7 +39,7 @@
 
 {# default cod type #}
 {{ forms.selectField({
-    label: "Cash On Delivery (COD) type"|t('dpd-easy-ship'),
+    label: settings.attributeLabels.codType,
     instructions: "This setting is only used for the COD type parcels."|t('dpd-easy-ship'),
     name: 'codType',
     options: settings.getCodTypeOptions(),
@@ -47,6 +47,13 @@
     errors: settings.getErrors('codType'),
 }) }}
 
+{{ forms.textField({
+    label: settings.attributeLabels.parcelShopOptionsUrl,
+    instructions: "JSON must contain object 'pudo_locations' with array of location objects, each containing 'PUDOID' and 'PNAME' properties."|t('dpd-easy-ship'),
+    name: 'parcelShopOptionsUrl',
+    value: settings.parcelShopOptionsUrl,
+    errors: settings.getErrors('parcelShopOptionsUrl'),
+}) }}
 
 <hr>
 <h3>{{ 'Sender contact info on the label'|t('dpd-easy-ship') }}</h3>

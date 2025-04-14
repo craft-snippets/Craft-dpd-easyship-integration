@@ -4,6 +4,8 @@ namespace craftsnippets\dpdeasyship;
 
 use Craft;
 use craft\commerce\elements\Order;
+use craft\events\RegisterTemplateRootsEvent;
+use craft\web\View;
 use craftsnippets\baseshippingplugin\ShippingPlugin;
 use craftsnippets\baseshippingplugin\ShippingServiceBase;
 
@@ -11,6 +13,8 @@ use craftsnippets\dpdeasyship\models\Settings;
 use craftsnippets\dpdeasyship\models\DpdEasyShipShipmentDetails;
 use craftsnippets\dpdeasyship\services\DpdEasyShipService;
 use craftsnippets\dpdeasyship\elements\actions\CreateParcelsAction;
+use craftsnippets\dpdeasyship\models\DpdEasyShipShipmentInfoContents;
+use yii\base\Event;
 
 class DpdEasyShip extends ShippingPlugin
 {
@@ -19,6 +23,14 @@ class DpdEasyShip extends ShippingPlugin
     public function init(): void
     {
         parent::init();
+
+        Event::on(
+            View::class,
+            View::EVENT_REGISTER_SITE_TEMPLATE_ROOTS,
+            function(RegisterTemplateRootsEvent $event) {
+                $event->roots[$this->handle] = __DIR__ . '/templates';
+            }
+        );
     }
 
     public static function config(): array
@@ -129,5 +141,14 @@ class DpdEasyShip extends ShippingPlugin
     public function getWeightInputInstructions(): ?string
     {
         return Craft::t('dpd-easy-ship', 'Weight value is required when using "Parcel Shop" type parcel.');
+    }
+
+    public function getParcelShopSelectWidgetTemplate(): ?string
+    {
+        return 'dpd-easy-ship/parcel-shop-select.twig';
+    }
+    public static function getShipmentInfContentsClass()
+    {
+        return DpdEasyShipShipmentInfoContents::class;
     }
 }

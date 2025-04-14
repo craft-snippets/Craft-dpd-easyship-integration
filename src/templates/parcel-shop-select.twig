@@ -1,3 +1,4 @@
+{% if plugin.getSettings().parcelShopOptionsUrl %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/styles/choices.min.css"/>
 <script src="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/scripts/choices.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.1.0"></script>
@@ -23,11 +24,12 @@
 </div>
 <script>
     (function(){
-        fetch('https://map.gls-hungary.com/data/deliveryPoints/hr.json')
+        fetch('{{ plugin.getSettings().parcelShopOptionsUrl }}')
             .then(response => response.json())
             .then(data => {
 
-                const options = data.items;
+                var options = data.pudo_locations;
+                options = Object.values(options)
 
                 const selectElement = document.querySelector('[data-parcel-shop-plugin="{{ pluginHandle }}"] [data-parcel-shop-code]');
                 const nameElement = document.querySelector('[data-parcel-shop-plugin="{{ pluginHandle }}"] [data-parcel-shop-name]');
@@ -42,10 +44,12 @@
 
                 // Transform options for Choices.js
                 const formattedOptions = options.map(opt => ({
-                    value: opt.id,
-                    label: `${opt.name} - ${opt.id}`,
-                    customProperties: { postalCode: opt.contact.postalCode, city: opt.contact.city }
+                    value: opt.PUDOID,
+                    label: `${opt.PNAME} - ${opt.PUDOID}`,
+                    customProperties: { postalCode: opt.address?.PZIPCODE || '', city: opt.address?.PTOWN || '' }
                 }));
+
+                // console.log(formattedOptions)
 
                 // set parcel shop name input
                 choices.passedElement.element.addEventListener(
@@ -73,8 +77,8 @@
                 }
 
                 // Initialize Fuse.js with correct search keys
-                const fuse = new Fuse(options, {
-                    keys: ['name', 'contact.postalCode', 'contact.city'], // Search on `name` and `contact.city`
+                const fuse = new Fuse(formattedOptions, {
+                    keys: ['value', 'label', 'customProperties.postalCode', 'customProperties.city'], // Search on `name` and `contact.city`
                     threshold: 0.3
                 });
 
@@ -95,9 +99,9 @@
                     // Clear and update Choices.js dropdown
                     choices.clearChoices();
                     choices.setChoices(results.map(opt => ({
-                        value: opt.id,
-                        label: `${opt.name} - ${opt.id}`,
-                        customProperties: { postalCode: opt.contact.postalCode, city: opt.contact.city }
+                        value: opt.value,
+                        label: opt.label,
+                        customProperties: opt.customProperties,
                     })), 'value', 'label', true);
                 });
 
@@ -105,3 +109,8 @@
             .catch(error => console.error('Error loading data:', error));
     })();
 </script>
+{% else %}
+<div>
+    Please enter "Url to the JSON file containing parcel shop options" in the plugin settings.
+</div>
+{% endif %}

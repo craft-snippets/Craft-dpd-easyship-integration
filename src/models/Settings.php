@@ -22,6 +22,7 @@ class Settings extends Model
 //    public $instructionsFieldId;
     public $enabledShippingMethods = [];
     public $codType = ParcelCODType::AVERAGE;
+    public $parcelShopOptionsUrl;
 
     public function attributeLabels()
     {
@@ -31,6 +32,7 @@ class Settings extends Model
             'apiCountry' => Craft::t('dpd-easy-ship', 'API Country'),
             'enabledShippingMethods' => Craft::t('dpd-easy-ship', 'Shipping methods with Dpd EasyShip integration enabled'),
             'codType' => Craft::t('dpd-easy-ship', 'Cash On Delivery (COD) type'),
+            'parcelShopOptionsUrl' => Craft::t('dpd-easy-ship', 'Url to the JSON file containing parcel shop options'),
         ];
     }
 
@@ -78,5 +80,7 @@ class Settings extends Model
     {
         return DpdEasyShip::getInstance()->getPluginService()->getCodTypeOptions();
     }
+
+
 
 }
