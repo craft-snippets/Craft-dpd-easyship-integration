@@ -4,6 +4,7 @@ namespace craftsnippets\dpdeasyship;
 
 use Craft;
 use craft\commerce\elements\Order;
+use craft\commerce\Plugin as CommercePlugin;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\web\View;
 use craftsnippets\baseshippingplugin\ShippingPlugin;
@@ -150,5 +151,23 @@ class DpdEasyShip extends ShippingPlugin
     public static function getShipmentInfContentsClass()
     {
         return DpdEasyShipShipmentInfoContents::class;
+    }
+
+    public function isParcelShopAllowedForShippingMethod($methodHandle)
+    {
+        $shippingMethod = CommercePlugin::getInstance()->shippingMethods->getShippingMethodByHandle($methodHandle);
+        if(is_null($shippingMethod)){
+            return false;
+        }
+        $settings = $this->getSettings()->enabledShippingMethods;
+        $settingsForMethod = array_filter($settings, function($single) use ($shippingMethod){
+            return $single['shippingMethodId'] == $shippingMethod->id;
+        });
+        if(empty($settingsForMethod)){
+            return false;
+        }
+        $settingsForMethod = reset($settingsForMethod);
+
+        return $settingsForMethod['parcelType'] == \DataLinx\DPD\ParcelType::PARCEL_SHOP;
     }
 }
