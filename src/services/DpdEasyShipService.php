@@ -121,7 +121,7 @@ class DpdEasyShipService extends ShippingServiceBase
         }
 
         if(is_null($address->organization) && is_null($address->fullName)){
-            throw new \Exception(Craft::t('mygls-shipping', 'organisation and full name are both empty'));
+            throw new \Exception(Craft::t('dpd-easy-ship', 'organisation and full name are both empty'));
         }
 
         // delivery address validation

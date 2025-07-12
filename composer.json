@@ -1,13 +1,13 @@
 {
   "name": "craftsnippets/craft-shipping-toolbox-dpd-easyship",
   "type": "craft-plugin",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "license": "mit",
   "require": {
     "php": ">=8.2",
     "craftcms/cms": "^5.5.0",
     "datalinx/dpd-php-sdk": "*",
-    "craftsnippets/craft-shipping-toolbox-base-plugin": "*"
+    "craftsnippets/craft-shipping-toolbox-base-plugin": "1.0.4"
   },
   "autoload": {
     "psr-4": {

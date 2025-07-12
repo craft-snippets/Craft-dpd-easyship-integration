@@ -1,30 +1,11 @@
 # DPD EasySHip Shipping Toolbox
 
-
-
-## Requirements
-
-This plugin requires Craft CMS 5.5.0 or later, and PHP 8.2 or later.
-
 ## Installation
 
-You can install this plugin from the Plugin Store or with Composer.
-
-#### From the Plugin Store
-
-Go to the Plugin Store in your project’s Control Panel and search for “DPD EasySHip Shipping Toolbox”. Then press “Install”.
-
-#### With Composer
-
-Open your terminal and run the following commands:
-
-```bash
-# go to the project directory
-cd /path/to/my-project.test
-
-# tell Composer to load the plugin
-composer require craftsnippets/craft-shipping-toolbox-dpd-easyship
-
-# tell Craft to install the plugin
-./craft plugin/install dpd-easy-ship
 ```
+composer require craftsnippets/craft-shipping-toolbox-dpd-easyship
+```
+
+## Testing
+
+If you get this error: "API Error: Georouting Exception: IV106: Input validation postal code not matching with destination country postcode pattern" - you can try this postal code for Croatia - "22222".
